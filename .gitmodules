@@ -1,0 +1,3 @@
+[submodule "coqpylspclient"]
+	path = coqpylspclient
+	url = https://github.com/K-dizzled/coqpylspclient.git

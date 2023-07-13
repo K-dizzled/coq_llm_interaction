@@ -35,7 +35,6 @@ class GPT35(LLMInterface):
         return self.__get_next_responses(choices=choices)
 
     def send_message_wout_history_change(self, message: str, choices: int = 1) -> List[str]:
-        print(self.history + [{"role": "user", "content": message}])
         completion = openai.ChatCompletion.create(
             model=self.model, 
             messages=self.history + [{"role": "user", "content": message}],

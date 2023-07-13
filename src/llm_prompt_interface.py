@@ -1,4 +1,4 @@
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 
 class LLMPromptInterface:
     def get_system_message(self) -> str: 
@@ -13,7 +13,7 @@ class LLMPromptInterface:
         """
         pass
 
-    def verify_proof(self, thr_st: str, proof: str) -> bool: 
+    def verify_proof(self, thr_st: str, proof: str) -> Tuple[bool, str]: 
         """
         Verifies the proof using the ProofView class.
         """

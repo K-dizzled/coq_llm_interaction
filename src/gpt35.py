@@ -1,9 +1,13 @@
-from llm_interface import LLMInterface
+from src.llm_interface import LLMInterface
+from src.llm_prompt_interface import LLMPromptInterface
 from typing import List, Dict
 import openai
 
 class GPT35(LLMInterface):
-    def __init__(self, prompt: str, api_key: str, message_history: List[Dict[str, str]] = []) -> None:
+    def __init__(self, api_key: str, llm_prompt: LLMPromptInterface) -> None:
+        prompt = llm_prompt.get_system_message()
+        message_history = llm_prompt.get_msg_history()
+
         self.history = []
         self.history.append( {"role": "system", "content": prompt} )
         self.history.extend(message_history)
@@ -29,3 +33,12 @@ class GPT35(LLMInterface):
     def send_message_for_response(self, message: str, choices: int = 1) -> List[str]:
         self.__accept_message(message)
         return self.__get_next_responses(choices=choices)
+
+    def send_message_wout_history_change(self, message: str, choices: int = 1) -> List[str]:
+        print(self.history + [{"role": "user", "content": message}])
+        completion = openai.ChatCompletion.create(
+            model=self.model, 
+            messages=self.history + [{"role": "user", "content": message}],
+            n=choices
+        )
+        return [choice['message']['content'] for choice in completion["choices"]]

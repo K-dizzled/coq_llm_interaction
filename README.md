@@ -41,7 +41,6 @@ Basic implementation of the `LLMPromptInterface` is presented as `CoqPromptKShot
     "role": "assistant",
     "content": "Proof ...",
 }, 
-// ...
 ```
 And theorems from the second file are given to the assistants to evaluate performance.
 

@@ -2,7 +2,7 @@ from typing import List, Dict
 from src.llm_prompt_interface import LLMPromptInterface
 
 class LLMInterface:
-    def __init__(self, api_key: str, llm_prompt: LLMPromptInterface)  -> None:
+    def __init__(self, api_key: str)  -> None:
         """
         Constructs a new LLMInterface object. Initializes the LLM 
         with a given system_message.append(message_history). 
@@ -13,6 +13,15 @@ class LLMInterface:
             By default it is empty.
         """
         pass 
+
+    def init_history(self, llm_prompt: LLMPromptInterface) -> None:
+        """
+        Initializes the message history of the LLM. 
+        This function should be called after the LLM is initialized. 
+
+        :param llm_prompt: The LLM prompt to use to initialize the message history. 
+        """
+        pass
 
     def send_message_for_response(self, message: str, choices: int = 1) -> List[str]: 
         """

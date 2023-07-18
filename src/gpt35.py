@@ -4,13 +4,8 @@ from typing import List, Dict
 import openai
 
 class GPT35(LLMInterface):
-    def __init__(self, api_key: str, llm_prompt: LLMPromptInterface) -> None:
-        prompt = llm_prompt.get_system_message()
-        message_history = llm_prompt.get_msg_history()
-
+    def __init__(self, api_key: str) -> None:
         self.history = []
-        self.history.append( {"role": "system", "content": prompt} )
-        self.history.extend(message_history)
         self.model = "gpt-3.5-turbo-0301"
         openai.api_key = api_key
 
@@ -29,6 +24,12 @@ class GPT35(LLMInterface):
 
         return [choice['message']['content'] for choice in completion["choices"]]
 
+    def init_history(self, llm_prompt: LLMPromptInterface) -> None:
+        prompt = llm_prompt.get_system_message()
+        message_history = llm_prompt.get_msg_history()
+
+        self.history.append( {"role": "system", "content": prompt} )
+        self.history.extend(message_history)
 
     def send_message_for_response(self, message: str, choices: int = 1) -> List[str]:
         self.__accept_message(message)

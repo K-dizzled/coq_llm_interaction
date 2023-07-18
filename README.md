@@ -31,7 +31,7 @@ def get_msg_history(self) -> List[Dict[str, str]]:
 
 If one wants to evaluate the performance of gpt, for example, with respect to a given way of prompting it, e.g. single shot / k-shot (passing gpt a number of theorems+proofs to learn from) / k-shot with context embedded into proofs, etc., one needs to implement the `LLMPromptInterface` interface.
 
-Basic implementation of the `LLMPromptInterface` is presented as `CoqPromptKShot` which takes two files as input, one is preprocessed into the history of messages in the following format: 
+Basic implementation of the `LLMPromptInterface` is presented as `CoqPromptKShot` which takes a coq file and two lists of strings as input. Theorems with names from the first list are looked up in the file and are preprocessed to a form of messages history: 
 ```json
 {
     "role": "user",
@@ -42,7 +42,8 @@ Basic implementation of the `LLMPromptInterface` is presented as `CoqPromptKShot
     "content": "Proof ...",
 }, 
 ```
-And theorems from the second file are given to the assistants to evaluate performance.
+And theorems from the second list are given to the assistants to evaluate performance. *VERY important:* 
+theorems from both list *MUST* be ordered in the same way as they are in the file.
 
 To run a basic check of how things work, take a look at the `__main__` file in `src`:
 ```

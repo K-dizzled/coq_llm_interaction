@@ -42,8 +42,8 @@ Basic implementation of the `LLMPromptInterface` is presented as `CoqPromptKShot
     "content": "Proof ...",
 }, 
 ```
-And theorems from the second list are given to the assistants to evaluate performance. *VERY important:* 
-theorems from both list *MUST* be ordered in the same way as they are in the file.
+And theorems from the second list are given to the assistants to evaluate performance. ***VERY important:*** 
+theorems from both list ***MUST*** be ordered in the same way as they are in the file.
 
 To run a basic check of how things work, take a look at the `__main__` file in `src`:
 ```

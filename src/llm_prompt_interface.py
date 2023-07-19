@@ -55,7 +55,12 @@ class LLMPromptInterface:
         Returns the list of theorems on which we 
         want to evaluate the LLM.
         """
-        theorems_for_eval = list(filter(lambda th: th.name in self.test_theorems, self.theorems_from_file))
+        theorems_for_eval = list(
+            filter(
+                lambda th: th.name in self.test_theorems, 
+                self.theorems_from_file
+            )
+        )
         self.statements_to_lines = {
             theorem.statement : theorem.statement_range.start.line 
             for theorem in theorems_for_eval

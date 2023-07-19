@@ -38,3 +38,4 @@ class CoqPromptKShot(LLMPromptInterface):
                 history.append({"role": "assistant", "content": thr_proof})
         
         return history
+    

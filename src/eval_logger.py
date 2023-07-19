@@ -4,6 +4,9 @@ from abc import abstractmethod
 import logging
 import os
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("EvalLogger")
+
 
 class EvalLoggerException(Exception):
     def __init__(self, message: str) -> None:
@@ -38,9 +41,6 @@ class EvalLogger:
         self.proof_complete = None
         self.contents_pointer = 0
 
-        logging.basicConfig(level=logging.INFO)
-        self.logger = logging.getLogger("EvalLogger")
-
     def __log(self, text: str) -> None: 
         with open(self.log_f_path, "a") as f:
             f.write(text)
@@ -74,7 +74,7 @@ class EvalLogger:
         self.contents = updated_contents
         
     def on_start_llm_response_fetch(self, thr_index: int, am_theorems: int) -> None: 
-        self.logger.info(f"Fetching potential proofs for theorem {thr_index + 1}/{am_theorems}")
+        logger.info(f"Fetching potential proofs for theorem {thr_index + 1}/{am_theorems}")
 
     def on_theorem_proof_start(self) -> None:
         if self.in_proof: 
@@ -95,7 +95,7 @@ class EvalLogger:
         
         self.proof_log += f"(* Attempt {attempt_ind} for theorem {thr_ind} successful *)\n\n"
         self.proof_log += "(* {THEOREM PROOF LOG END} *)"
-        self.logger.info(f"Attempt {attempt_ind} for theorem {thr_ind} successful")
+        logger.info(f"Attempt {attempt_ind} for theorem {thr_ind} successful")
         self.values[attempt_ind - 1] += 1
         self.proof_complete = True
     

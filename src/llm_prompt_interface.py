@@ -1,11 +1,17 @@
 from typing import List, Dict, Optional, Tuple
 import sys
+import logging
 
 sys.path.insert(1, '../coqpylspclient')
 
 from coqlspclient.proof_view import ProofView
 
 sys.path.pop()
+
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger("LLMPromptInterface")
+
 
 class LLMPromptInterface:
     def __init__(
@@ -18,6 +24,7 @@ class LLMPromptInterface:
         self.prompt_strategy = self.__class__.__name__
 
         self.proof_view = ProofView(self.coq_file)
+        logger.info(f"Start preprocessing for {self.coq_file}")
         self.theorems_from_file = self.proof_view.parse_file()
         self.statements_to_lines = None
 

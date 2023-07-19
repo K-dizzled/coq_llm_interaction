@@ -60,14 +60,23 @@ Logs are stored in the `logs` directory and each log file is of the following fo
  Strat: ...
 *)
 
-(* Start context *)
-(* ... *)
-(* End context *)
+(* 
+    ...
+*)
 
+(* {THEOREM PROOF LOG START} *)
 (* Attempt i for theorem j *)
 Theorem test : forall (A : Prop), A -> A. (* some theorem *)
 Proof.
     auto. (* some proof *)
 Qed.
 (* Attempt i for theorem j successful / unsuccessful *)
+
+(* {THEOREM PROOF LOG END} *)
+
+(* 
+    ...
+*)
 ```
+Proofs are generated for the theorems that are chosen for evaluation. Incorrect proofs are 
+inserted in comments.

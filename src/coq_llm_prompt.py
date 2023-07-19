@@ -28,7 +28,7 @@ class CoqPromptKShot(LLMPromptInterface):
                )
 
     def get_msg_history(self) -> List[Dict[str, str]]:
-        theorems = self.proof_view.parse_file()
+        theorems = self.theorems_from_file
 
         history = []
         for theorem in theorems: 
@@ -38,4 +38,3 @@ class CoqPromptKShot(LLMPromptInterface):
                 history.append({"role": "assistant", "content": thr_proof})
         
         return history
-    

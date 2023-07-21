@@ -27,7 +27,10 @@ class Interactor:
         been found successfully to the amount of theorems 
         provided for evaluation.
         """
-        run_logger = EvalLogger(self.llm_prompt.coq_file, self.llm_prompt.prompt_strategy, shots)
+        run_logger = EvalLogger(
+            self.llm_prompt.coq_file, self.llm_prompt.prompt_strategy, 
+            shots, self.llm_prompt.statements_to_ranges
+        )
 
         statements = self.llm_prompt.get_theorems_for_evaluation()
         successfull_proofs = 0
@@ -40,20 +43,25 @@ class Interactor:
             run_logger.on_theorem_proof_start()
             with alive_bar(len(llm_response)) as bar:
                 for response_index, response in enumerate(llm_response):
-                    proof_status, error_msg = self.llm_prompt.verify_proof(statement, response)
-                    if proof_status:
-                        successfull_proofs += 1
-                        run_logger.on_success_attempt(
-                            response_index + 1, thr_index + 1, 
-                            statement, response
-                        )
-                        break
-                    else:
-                        run_logger.on_failed_attempt(
-                            response_index + 1, thr_index + 1, 
-                            statement, response, error_msg
-                        )
-                    bar()
+                    try: 
+                        proof_status, error_msg = self.llm_prompt.verify_proof(statement, response)
+                        if proof_status:
+                            successfull_proofs += 1
+                            run_logger.on_success_attempt(
+                                response_index + 1, thr_index + 1, 
+                                statement, response
+                            )
+                            break
+                        else:
+                            run_logger.on_failed_attempt(
+                                response_index + 1, thr_index + 1, 
+                                statement, response, error_msg
+                            )
+                        bar()
+                    except Exception as e:
+                        run_logger.on_attempt_exception(response_index + 1, thr_index + 1, str(e))
+                        self.llm_prompt.restart_proof_view()
+                        bar()
             
             run_logger.on_theorem_proof_end(statement)
     

@@ -1,7 +1,6 @@
-from src.llm_prompt_interface import LLMPromptInterface
+from src.llm_prompt_interface import LLMPromptInterface, ProofView
 from typing import List, Dict, Optional, Tuple
-import sys
-import os
+import random
 
 class CoqPromptBasic(LLMPromptInterface): 
     def get_system_message(self) -> str: 
@@ -38,3 +37,34 @@ class CoqPromptKShot(LLMPromptInterface):
                 history.append({"role": "assistant", "content": thr_proof})
         
         return history
+
+
+class CoqPromptKShotRandomEvalChoice(CoqPromptKShot): 
+    def __init__(
+        self, 
+        path_to_coq_file: str, 
+        train_fraction: float,
+    ) -> None:
+        if train_fraction < 0 or train_fraction > 1: 
+            raise ValueError("train_fraction must be between 0 and 1")
+        proof_view = ProofView(path_to_coq_file)
+        all_theorems = proof_view.all_theorem_names()
+        self.train_fraction = train_fraction
+        proof_view.exit()
+        # Split self.theorems_from_file into train and test 
+        # according to train_fraction
+        train_theorems = []
+        test_theorems = []
+        for theorem in all_theorems:
+            if random.random() < train_fraction:
+                train_theorems.append(theorem)
+            else:
+                test_theorems.append(theorem)
+        # make both lists 3 times shorter cause otherwise 
+        # we reach the token limit when using gpt
+        train_theorems = train_theorems[:len(train_theorems)//3]
+        test_theorems = test_theorems[:len(test_theorems)//3]
+
+        print(f"Train theorems: {train_theorems}")
+        print(f"Test theorems: {test_theorems}")
+        super().__init__(path_to_coq_file, train_theorems, test_theorems)

@@ -5,6 +5,7 @@ import logging
 sys.path.insert(1, '../coqpylspclient')
 
 from coqlspclient.proof_view import ProofView
+from pylspclient.lsp_structs import Range, Position
 
 sys.path.pop()
 
@@ -26,10 +27,27 @@ class LLMPromptInterface:
         self.proof_view = ProofView(self.coq_file)
         logger.info(f"Start preprocessing for {self.coq_file}")
         self.theorems_from_file = self.proof_view.parse_file()
-        self.statements_to_lines = None
 
         self.train_theorems = train_theorems
         self.test_theorems = test_theorems
+
+        self.theorems_for_eval = list(
+            filter(
+                lambda th: th.name in self.test_theorems, 
+                self.theorems_from_file
+            )
+        )
+
+        try: 
+            self.statements_to_ranges = {
+                theorem.statement : Range(
+                    start=theorem.statement_range.start, 
+                    end=theorem.proof.end_pos.end
+                )
+                for theorem in self.theorems_for_eval
+            }
+        except AttributeError:
+            raise Exception("Some theorems in the file do not have proofs.")
 
     def get_system_message(self) -> str: 
         """
@@ -48,10 +66,10 @@ class LLMPromptInterface:
         Verifies the proof using the ProofView class.
         """
         context = ""
-        if self.statements_to_lines is not None:
+        if self.statements_to_ranges is not None:
             with open(self.coq_file, "r") as f:
                 context = f.read()                
-                thr_line_index = self.statements_to_lines[thr_st]
+                thr_line_index = self.statements_to_ranges[thr_st].start.line
                 context = "\n".join(context.split('\n')[:thr_line_index])
                 
         check_proof = self.proof_view.check_proof(thr_st, proof, context)
@@ -62,18 +80,13 @@ class LLMPromptInterface:
         Returns the list of theorems on which we 
         want to evaluate the LLM.
         """
-        theorems_for_eval = list(
-            filter(
-                lambda th: th.name in self.test_theorems, 
-                self.theorems_from_file
-            )
-        )
-        self.statements_to_lines = {
-            theorem.statement : theorem.statement_range.start.line 
-            for theorem in theorems_for_eval
-        }
+        return [theorem.statement for theorem in self.theorems_for_eval]
 
-        return [theorem.statement for theorem in theorems_for_eval]
+    def restart_proof_view(self) -> None:
+        """
+        Restarts the ProofView class.
+        """
+        self.proof_view = ProofView(self.coq_file)
     
     def stop(self) -> None: 
         """

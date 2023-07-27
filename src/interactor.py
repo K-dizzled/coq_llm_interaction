@@ -41,27 +41,23 @@ class Interactor:
                 choices=shots
             )
             run_logger.on_theorem_proof_start()
-            with alive_bar(len(llm_response)) as bar:
-                for response_index, response in enumerate(llm_response):
-                    try: 
-                        proof_status, error_msg = self.llm_prompt.verify_proof(statement, response)
-                        if proof_status:
-                            successfull_proofs += 1
-                            run_logger.on_success_attempt(
-                                response_index + 1, thr_index + 1, 
-                                statement, response
-                            )
-                            break
-                        else:
-                            run_logger.on_failed_attempt(
-                                response_index + 1, thr_index + 1, 
-                                statement, response, error_msg
-                            )
-                        bar()
-                    except Exception as e:
-                        run_logger.on_attempt_exception(response_index + 1, thr_index + 1, str(e))
-                        self.llm_prompt.restart_proof_view()
-                        bar()
+            try: 
+                proof_check_result = self.llm_prompt.verify_proofs(statement, llm_response)
+                for i, (proof_status, error_msg) in enumerate(proof_check_result):
+                    if proof_status: 
+                        successfull_proofs += 1
+                        run_logger.on_success_attempt(
+                            i + 1, thr_index + 1, 
+                            statement, llm_response[i]
+                        )
+                    else: 
+                        run_logger.on_failed_attempt(
+                            i + 1, thr_index + 1, 
+                            statement, llm_response[i], error_msg
+                        )
+            except Exception as e:
+                run_logger.on_attempt_exception(0, thr_index + 1, str(e))
+                self.llm_prompt.restart_proof_view()
             
             run_logger.on_theorem_proof_end(statement)
     

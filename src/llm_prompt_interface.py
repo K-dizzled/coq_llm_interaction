@@ -76,6 +76,25 @@ class LLMPromptInterface:
                 
         check_proof = self.proof_view.check_proof(thr_st, proof, context)
         return check_proof
+
+    def verify_proofs(self, thr_st: str, proofs: List[str]) -> List[Tuple[bool, str]]:
+        """
+        Verifies k proofs using the ProofView class. Return 
+        a list of tuples (bool, str) where the first element
+        is the result of the verification and the second is
+        the error message if the verification failed.
+        Either verification stops when the first proof is
+        verified or all proofs are verified and failed.
+        """
+        context = ""
+        if self.statements_to_ranges is not None:
+            with open(self.coq_file, "r") as f:
+                context = f.read()                
+                thr_line_index = self.statements_to_ranges[thr_st].start.line
+                context = "\n".join(context.split('\n')[:thr_line_index])
+                
+        result = self.proof_view.check_proofs(context, thr_st, proofs)
+        return result
     
     def get_theorems_for_evaluation(self) -> List[str]:
         """

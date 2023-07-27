@@ -40,6 +40,10 @@ class LLMPromptInterface:
                 self.theorems_from_file
             )
         )
+        self.correct_proofs = {
+            theorem.statement : theorem.proof.only_text() 
+            for theorem in self.theorems_from_file
+        }
 
         try: 
             self.statements_to_ranges = {

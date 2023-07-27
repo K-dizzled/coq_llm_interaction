@@ -61,7 +61,7 @@ class Interactor:
                 run_logger.on_attempt_exception(0, thr_index + 1, str(e))
                 self.llm_prompt.restart_proof_view()
             
-            run_logger.on_theorem_proof_end(statement)
+            run_logger.on_theorem_proof_end(statement, self.llm_prompt.correct_proofs[statement])
     
         run_logger.on_evaluation_finish()
 

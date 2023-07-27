@@ -18,13 +18,15 @@ class LLMPromptInterface:
     def __init__(
         self, 
         path_to_coq_file: str, 
+        path_to_root_dir: str,
         train_theorems: List[str],
         test_theorems: List[str]
     ) -> None:
         self.coq_file = path_to_coq_file
+        self.root_dir = path_to_root_dir
         self.prompt_strategy = self.__class__.__name__
 
-        self.proof_view = ProofView(self.coq_file)
+        self.proof_view = ProofView(self.coq_file, self.root_dir)
         logger.info(f"Start preprocessing for {self.coq_file}")
         self.theorems_from_file = self.proof_view.parse_file()
 
@@ -86,7 +88,7 @@ class LLMPromptInterface:
         """
         Restarts the ProofView class.
         """
-        self.proof_view = ProofView(self.coq_file)
+        self.proof_view = ProofView(self.coq_file, self.root_dir)
     
     def stop(self) -> None: 
         """

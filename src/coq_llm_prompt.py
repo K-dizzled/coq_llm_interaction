@@ -43,11 +43,12 @@ class CoqPromptKShotRandomEvalChoice(CoqPromptKShot):
     def __init__(
         self, 
         path_to_coq_file: str, 
+        path_to_root_dir: str,
         train_fraction: float,
     ) -> None:
         if train_fraction < 0 or train_fraction > 1: 
             raise ValueError("train_fraction must be between 0 and 1")
-        proof_view = ProofView(path_to_coq_file)
+        proof_view = ProofView(path_to_coq_file, path_to_root_dir)
         all_theorems = proof_view.all_theorem_names()
         self.train_fraction = train_fraction
         proof_view.exit()
@@ -67,4 +68,4 @@ class CoqPromptKShotRandomEvalChoice(CoqPromptKShot):
 
         print(f"Train theorems: {train_theorems}")
         print(f"Test theorems: {test_theorems}")
-        super().__init__(path_to_coq_file, train_theorems, test_theorems)
+        super().__init__(path_to_coq_file, path_to_root_dir, train_theorems, test_theorems)

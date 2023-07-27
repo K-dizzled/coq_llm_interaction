@@ -15,6 +15,7 @@ class Interactor:
         self.log_f_path = None
         self.contents = None
         self.contents_pointer = 0
+        self.timeout = 20
     
     def run(self, shots: int = 1) -> float:
         """ 
@@ -40,6 +41,7 @@ class Interactor:
                 message=statement, 
                 choices=shots
             )
+            run_logger.on_end_llm_response_fetch()
             run_logger.on_theorem_proof_start()
             try: 
                 proof_check_result = self.llm_prompt.verify_proofs(statement, llm_response)

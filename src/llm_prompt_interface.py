@@ -20,14 +20,15 @@ class LLMPromptInterface:
         path_to_coq_file: str, 
         path_to_root_dir: str,
         train_theorems: List[str],
-        test_theorems: List[str]
+        test_theorems: List[str],
+        proof_view: Optional[ProofView] = None
     ) -> None:
+        self.proof_view = proof_view if proof_view is not None else ProofView(path_to_coq_file, path_to_root_dir)
         self.coq_file = path_to_coq_file
         self.root_dir = path_to_root_dir
         self.prompt_strategy = self.__class__.__name__
 
-        self.proof_view = ProofView(self.coq_file, self.root_dir)
-        logger.info(f"Start preprocessing for {self.coq_file}")
+        logger.info(f"Start preprocessing {self.coq_file} to obtain the training info.")
         self.theorems_from_file = self.proof_view.parse_file()
 
         self.train_theorems = train_theorems

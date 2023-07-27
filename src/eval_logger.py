@@ -103,6 +103,9 @@ class EvalLogger:
     def on_start_llm_response_fetch(self, thr_index: int, am_theorems: int) -> None: 
         logger.info(f"Fetching potential proofs for theorem {thr_index + 1}/{am_theorems}")
 
+    def on_end_llm_response_fetch(self) -> None:
+        logger.info("Fetching potential proofs finished")
+
     def on_theorem_proof_start(self) -> None:
         if self.in_proof: 
             raise EvalLoggerException("Already in proof")

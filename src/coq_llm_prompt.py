@@ -51,7 +51,6 @@ class CoqPromptKShotRandomEvalChoice(CoqPromptKShot):
         proof_view = ProofView(path_to_coq_file, path_to_root_dir)
         all_theorems = proof_view.all_theorem_names()
         self.train_fraction = train_fraction
-        proof_view.exit()
         # Split self.theorems_from_file into train and test 
         # according to train_fraction
         train_theorems = []
@@ -68,4 +67,4 @@ class CoqPromptKShotRandomEvalChoice(CoqPromptKShot):
 
         print(f"Train theorems: {train_theorems}")
         print(f"Test theorems: {test_theorems}")
-        super().__init__(path_to_coq_file, path_to_root_dir, train_theorems, test_theorems)
+        super().__init__(path_to_coq_file, path_to_root_dir, train_theorems, test_theorems, proof_view=proof_view)

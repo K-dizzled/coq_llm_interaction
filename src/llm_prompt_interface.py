@@ -4,7 +4,7 @@ import logging
 
 sys.path.insert(1, '../coqpylspclient')
 
-from coqlspclient.proof_view import ProofView
+from coqlspclient.proof_view import ProofView, ProofViewError
 from pylspclient.lsp_structs import Range, Position
 
 sys.path.pop()

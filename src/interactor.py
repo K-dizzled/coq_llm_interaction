@@ -1,5 +1,5 @@
 from src.llm_interface import LLMInterface
-from src.llm_prompt_interface import LLMPromptInterface
+from src.llm_prompt_interface import LLMPromptInterface, ProofViewError
 from src.eval_logger import EvalLogger
 from alive_progress import alive_bar
 
@@ -43,23 +43,48 @@ class Interactor:
             )
             run_logger.on_end_llm_response_fetch()
             run_logger.on_theorem_proof_start()
-            try: 
-                proof_check_result = self.llm_prompt.verify_proofs(statement, llm_response)
-                for i, (proof_status, error_msg) in enumerate(proof_check_result):
-                    if proof_status: 
-                        successfull_proofs += 1
-                        run_logger.on_success_attempt(
-                            i + 1, thr_index + 1, 
-                            statement, llm_response[i]
-                        )
+
+            verify_proofs_attempts = 3
+            proof_check_result = []
+            while verify_proofs_attempts > 0:
+                try: 
+                    proof_check_result = self.llm_prompt.verify_proofs(statement, llm_response)
+                    break
+                except ProofViewError as e:
+                    verify_proofs_attempts -= 1
+                    run_logger.on_proof_check_fail(e.message)
+                    run_logger.on_start_llm_response_fetch(thr_index, len(statements))
+                    llm_response = self.llm_interface.send_message_wout_history_change(
+                        message=statement, 
+                        choices=shots
+                    )
+                    run_logger.on_end_llm_response_fetch()
+                    if verify_proofs_attempts == 0: 
+                        raise e
                     else: 
-                        run_logger.on_failed_attempt(
-                            i + 1, thr_index + 1, 
-                            statement, llm_response[i], error_msg
-                        )
-            except Exception as e:
-                run_logger.on_attempt_exception(0, thr_index + 1, str(e))
-                self.llm_prompt.restart_proof_view()
+                        continue
+                except Exception as e:
+                    run_logger.on_attempt_exception(0, thr_index + 1, str(e))
+                    run_logger.on_start_llm_response_fetch(thr_index, len(statements))
+                    llm_response = self.llm_interface.send_message_wout_history_change(
+                        message=statement, 
+                        choices=shots
+                    )
+                    run_logger.on_end_llm_response_fetch()
+                    self.llm_prompt.restart_proof_view()
+
+            for i, (proof_status, error_msg) in enumerate(proof_check_result):
+                if proof_status: 
+                    successfull_proofs += 1
+                    run_logger.on_success_attempt(
+                        i + 1, thr_index + 1, 
+                        statement, llm_response[i]
+                    )
+                else: 
+                    run_logger.on_failed_attempt(
+                        i + 1, thr_index + 1, 
+                        statement, llm_response[i], error_msg
+                    )
             
             run_logger.on_theorem_proof_end(statement, self.llm_prompt.correct_proofs[statement])
     

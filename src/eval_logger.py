@@ -149,6 +149,11 @@ class EvalLogger:
         self.proof_log += f"(* EXCEPTION message: {error_msg} *)\n\n"
         logger.info(f"Attempt {attempt_ind} for theorem {thr_ind} failed with an exception")
 
+    def on_proof_check_fail(self, error_msg: str) -> None:
+        if not self.in_proof: 
+            raise EvalLoggerException("Not in proof")
+        self.proof_log += f"(* ProofView responded with an error: {error_msg} *)\n"
+
     def on_theorem_proof_end(self, statement: str, correct_proof: str) -> None: 
         if not self.in_proof: 
             raise EvalLoggerException("Not in proof")

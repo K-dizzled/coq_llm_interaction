@@ -40,8 +40,8 @@ class Interactor:
         statements = self.llm_prompt.get_theorems_for_evaluation()
         successfull_proofs = 0
         for thr_index, statement in enumerate(statements):
-            run_logger.log("Await to not bump into the tocken limit")
-            time.sleep(self.timeout)
+            # run_logger.log("Await to not bump into the tocken limit")
+            # time.sleep(self.timeout)
             run_logger.on_start_llm_response_fetch(thr_index, len(statements))
             llm_response = self.llm_interface.send_message_wout_history_change(
                 message=statement, 

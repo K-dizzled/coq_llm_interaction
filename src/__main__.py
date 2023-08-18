@@ -1,13 +1,13 @@
-from src.interactor import Interactor
-from src.gpt35 import GPT35
+from .interactor import Interactor
+from .gpt35 import GPT35
 import dotenv
-from src.coq_llm_prompt import CoqPromptKShot, CoqPromptKShotRandomEvalChoice
+from .coq_llm_prompt import CoqPromptKShot, CoqPromptKShotRandomEvalChoice
 import os 
 
-coq_file = os.path.join("../coqpylspclient/imm/src/basic", "Execution.v")
-root_dir = "../coqpylspclient/imm"
-# coq_file = os.path.join("coqpylspclient/tests/resources", "aux.v")
-# root_dir = "coqpylspclient/tests/resources"
+# coq_file = os.path.join("../coqpylspclient/imm/src/basic", "Execution.v")
+# root_dir = "../coqpylspclient/imm"
+coq_file = os.path.join("coqpylspclient/tests/resources", "aux.v")
+root_dir = "coqpylspclient/tests/resources"
 # coq_file = os.path.join("coqpylspclient/tests/resources", "test_basic_sf.v")
 # root_dir = "coqpylspclient/tests/resources"
 # train_thrs = [
@@ -23,8 +23,8 @@ root_dir = "../coqpylspclient/imm"
 #     'negation_fn_applied_twice', 'andb_eq_orb'
 # ]
 
-# llm_prompt = CoqPromptKShot(coq_file, root_dir, [], ["test_thr", "test_thr1"])
-llm_prompt = CoqPromptKShotRandomEvalChoice(coq_file, root_dir, 0.3)
+llm_prompt = CoqPromptKShot(coq_file, root_dir, [], ["test_thr", "test_thr1"])
+# llm_prompt = CoqPromptKShotRandomEvalChoice(coq_file, root_dir, 0.3)
 # llm_prompt = CoqPromptKShot(coq_file, root_dir, ["fr_co", "loceq_co", "loceq_rmw"], ["loceq_rf"])
 
 dotenv.load_dotenv()

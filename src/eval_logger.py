@@ -21,7 +21,8 @@ class EvalLogger:
         coq_file_path: str, 
         run_strategy: str, 
         shots: int, 
-        statements2ranges: Dict[str, Range]
+        statements2ranges: Dict[str, Range], 
+        silent_mode: bool = False
     ) -> None: 
         self.coq_file = coq_file_path
         date_time_now = datetime.now().strftime("%d_%m__%H_%M_%S")        
@@ -50,10 +51,14 @@ class EvalLogger:
         self.contents_pointer = 0
         self.statements_to_ranges = statements2ranges
         self.ranges_to_text = {}
+        self.silent_mode = silent_mode
 
     def __log(self, text: str) -> None: 
         with open(self.log_f_path, "a") as f:
             f.write(text)
+
+    def log(self, text: str) -> None: 
+        logger.info(text)
 
     def __get_text_in_range(
         self, 
@@ -98,7 +103,6 @@ class EvalLogger:
             Position(len(self.contents) - 1, len(self.contents[-1]))
         )
         return new_text
-
         
     def on_start_llm_response_fetch(self, thr_index: int, am_theorems: int) -> None: 
         logger.info(f"Fetching potential proofs for theorem {thr_index + 1}/{am_theorems}")
@@ -128,6 +132,10 @@ class EvalLogger:
         logger.info(f"Attempt {attempt_ind} for theorem {thr_ind} successful")
         self.values[attempt_ind - 1] += 1
         self.proof_complete = True
+
+        if self.silent_mode:
+            needed_range = self.statements_to_ranges[statement]
+            self.ranges_to_text[needed_range] = f"{statement}\n{proof}\n"
     
     def on_failed_attempt(
         self, attempt_ind: int, 
@@ -164,11 +172,18 @@ class EvalLogger:
             self.proof_log += "(* {THEOREM PROOF LOG END} *)"
             
         self.in_proof = False
-        needed_range = self.statements_to_ranges[statement]
-        self.ranges_to_text[needed_range] = self.proof_log
+
+        if not self.silent_mode: 
+            needed_range = self.statements_to_ranges[statement]
+            self.ranges_to_text[needed_range] = self.proof_log
 
     def on_evaluation_finish(self) -> None: 
-        fig = go.Figure(data=[go.Pie(labels=self.labels, values=self.values, pull=self.pull)])
-        fig.write_image(self.log_pie_path)
         new_text = self.__substitute_text_pieces()
-        self.__log(new_text)
+
+        if not self.silent_mode: 
+            fig = go.Figure(data=[go.Pie(labels=self.labels, values=self.values, pull=self.pull)])
+            fig.write_image(self.log_pie_path)
+            self.__log(new_text)
+        else: 
+            print(new_text)
+            print(("failure" if self.values[:-1] == [0] * len(self.values[:-1]) else "success"))

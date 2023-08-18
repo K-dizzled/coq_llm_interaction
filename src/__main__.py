@@ -1,7 +1,7 @@
-from .interactor import Interactor
-from .gpt35 import GPT35
+from . import Interactor
+from . import GPT35
 import dotenv
-from .coq_llm_prompt import CoqPromptKShot, CoqPromptKShotRandomEvalChoice
+from . import CoqPromptKShot, CoqPromptKShotRandomEvalChoice
 import os 
 
 # coq_file = os.path.join("../coqpylspclient/imm/src/basic", "Execution.v")

@@ -1,7 +1,7 @@
-from .interactor import Interactor
-from .gpt35 import GPT35
+from . import Interactor
+from . import GPT35
 import dotenv
-from .coq_llm_prompt import CoqPromptSolveAdmitted
+from . import CoqPromptSolveAdmitted
 import os 
 import sys
 

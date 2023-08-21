@@ -1,4 +1,4 @@
-from src.llm_prompt_interface import LLMPromptInterface, ProofView
+from .llm_prompt_interface import LLMPromptInterface, ProofView
 from typing import List, Dict, Optional, Tuple
 import random
 

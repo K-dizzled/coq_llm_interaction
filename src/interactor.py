@@ -1,6 +1,6 @@
-from src.llm_interface import LLMInterface
-from src.llm_prompt_interface import LLMPromptInterface, ProofViewError
-from src.eval_logger import EvalLogger
+from .llm_interface import LLMInterface
+from .llm_prompt_interface import LLMPromptInterface, ProofViewError
+from .eval_logger import EvalLogger
 from alive_progress import alive_bar
 import time
 from typing import Tuple

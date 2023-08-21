@@ -1,7 +1,7 @@
 from datetime import datetime
 import plotly.graph_objects as go
 from abc import abstractmethod
-from src.llm_prompt_interface import Range, Position
+from .llm_prompt_interface import Range, Position
 from typing import Dict, List, Tuple
 import logging
 import os

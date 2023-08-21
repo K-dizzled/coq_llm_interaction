@@ -1,5 +1,5 @@
-from src.llm_interface import LLMInterface
-from src.llm_prompt_interface import LLMPromptInterface
+from .llm_interface import LLMInterface
+from .llm_prompt_interface import LLMPromptInterface
 from typing import List, Dict
 import openai
 import logging

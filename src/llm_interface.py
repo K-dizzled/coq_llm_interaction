@@ -1,5 +1,5 @@
 from typing import List, Dict
-from src.llm_prompt_interface import LLMPromptInterface
+from .llm_prompt_interface import LLMPromptInterface
 
 class LLMInterface:
     def __init__(self, api_key: str)  -> None:

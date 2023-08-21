@@ -1,13 +1,8 @@
 from typing import List, Dict, Optional, Tuple
 import sys
 import logging
-
-sys.path.insert(1, '../coqpylspclient')
-
-from coqlspclient.proof_view import ProofView, ProofViewError
-from pylspclient.lsp_structs import Range, Position
-
-sys.path.pop()
+from ..coqpylspclient import ProofView, ProofViewError
+from ..coqpylspclient import Range, Position
 
 
 logging.basicConfig(level=logging.INFO)

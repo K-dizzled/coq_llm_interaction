@@ -25,16 +25,17 @@ class EvalLogger:
         silent_mode: bool = False
     ) -> None: 
         self.coq_file = coq_file_path
-        date_time_now = datetime.now().strftime("%d_%m__%H_%M_%S")        
-        if not os.path.exists("logs"):
-            os.makedirs("logs")
-        
-        self.log_f_path = f"logs/log_{date_time_now}.v"
-        self.log_pie_path = f"logs/pie_{date_time_now}.pdf"
-        with open(self.log_f_path, "w") as log_file:
-            log_file.write(f"(*\n Date: {date_time_now}\n Strat: {run_strategy}\n*)\n\n")
-            with open(self.coq_file, "r") as coq_file:
-                self.contents = coq_file.read().split('\n')
+        date_time_now = datetime.now().strftime("%d_%m__%H_%M_%S")      
+        if not silent_mode:  
+            if not os.path.exists("logs"):
+                os.makedirs("logs")
+            
+            self.log_f_path = f"logs/log_{date_time_now}.v"
+            self.log_pie_path = f"logs/pie_{date_time_now}.pdf"
+            with open(self.log_f_path, "w") as log_file:
+                log_file.write(f"(*\n Date: {date_time_now}\n Strat: {run_strategy}\n*)\n\n")
+        with open(self.coq_file, "r") as coq_file:
+            self.contents = coq_file.read().split('\n')
 
         self.labels = []
         self.values = []

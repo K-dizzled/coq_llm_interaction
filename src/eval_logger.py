@@ -185,5 +185,7 @@ class EvalLogger:
             fig.write_image(self.log_pie_path)
             self.__log(new_text)
         else: 
+            print("&start&return&message&")
             print(new_text)
             print(("failure" if self.values[:-1] == [0] * len(self.values[:-1]) else "success"))
+            print("&end&return&message&")

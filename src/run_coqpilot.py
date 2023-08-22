@@ -16,4 +16,6 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 llm_interface = GPT35(OPENAI_API_KEY)
 interactor = Interactor(llm_prompt, llm_interface, is_silent=True)
 
+interactor.run(shots=15)
+
 llm_prompt.stop()

@@ -113,7 +113,7 @@ class CoqPromptSolveAdmitted(CoqPromptKShotWithContext):
         test_theorems = []
         for theorem in all_theorems:
             if "Admitted." in str(theorem.proof): 
-                test_theorems.append(theorem)
+                test_theorems.append(theorem.name)
             else:
-                train_theorems.append(theorem)
+                train_theorems.append(theorem.name)
         super().__init__(path_to_coq_file, path_to_root_dir, train_theorems, test_theorems, proof_view=proof_view)

@@ -112,7 +112,7 @@ class CoqPromptSolveAdmitted(CoqPromptKShotWithContext):
         train_theorems = []
         test_theorems = []
         for theorem in all_theorems:
-            if "Admitted." in str(theorem.proof): 
+            if theorem.proof.is_incomplete:
                 test_theorems.append(theorem.name)
             else:
                 train_theorems.append(theorem.name)

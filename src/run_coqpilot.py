@@ -8,12 +8,13 @@ import sys
 coq_file = sys.argv[1]
 root_dir = sys.argv[2]
 openai_api_key = sys.argv[3]
+number_of_shots = int(sys.argv[4])
 
 llm_prompt = CoqPromptSolveAdmitted(coq_file, root_dir)
 
 llm_interface = GPT35(openai_api_key)
 interactor = Interactor(llm_prompt, llm_interface, is_silent=True)
 
-interactor.run(shots=15)
+interactor.run(shots=number_of_shots)
 
 llm_prompt.stop()

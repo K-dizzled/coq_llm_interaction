@@ -136,7 +136,7 @@ class EvalLogger:
 
         if self.silent_mode:
             needed_range = self.statements_to_ranges[statement]
-            self.ranges_to_text[needed_range] = f"{statement}\n{proof}\n"
+            self.ranges_to_text[needed_range] = f"{statement}\n{proof}"
     
     def on_failed_attempt(
         self, attempt_ind: int, 

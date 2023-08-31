@@ -194,7 +194,7 @@ class EvalLogger:
             fig.write_image(self.log_pie_path)
             self.__log(new_text)
         elif self.logger_setup is not None: 
-            theorem_proof: List[str] = self.ranges_to_text.values()
+            theorem_proof: List[str] = list(self.ranges_to_text.values())
             if len(theorem_proof) == 0: 
                 print(self.logger_setup.failure_msg)
             elif len(theorem_proof) > 1:

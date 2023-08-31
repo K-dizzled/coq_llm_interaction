@@ -37,7 +37,7 @@ progress_bar = StdoutProgressBar(
     progress_update_msg, progress_log_every_n_percent
 )
 
-proof_view = ProofView(path_to_coq_file, path_to_root_dir, progress_bar=progress_bar)
+proof_view = ProofView(path_to_coq_file, path_to_root_dir, prog_bar=progress_bar)
 all_theorems = proof_view.parse_file()
 
 admitted_theorems: List[str] = []

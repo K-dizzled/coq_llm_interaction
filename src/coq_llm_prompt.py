@@ -68,7 +68,7 @@ class CoqPromptKShotWithContext(LLMPromptInterface):
         return history
 
 
-class CoqPromptKShotRandomEvalChoice(CoqPromptKShotWithContext): 
+class CoqPromptKShotRandomEvalChoice(CoqPromptKShot): 
     def __init__(
         self, 
         path_to_coq_file: str, 
@@ -101,7 +101,7 @@ class CoqPromptKShotRandomEvalChoice(CoqPromptKShotWithContext):
         super().__init__(path_to_coq_file, path_to_root_dir, train_theorems, test_theorems, proof_view=proof_view)
 
 
-class CoqPromptSolveAdmitted(CoqPromptKShotWithContext): 
+class CoqPromptSolveAdmitted(CoqPromptKShot): 
     def __init__(
         self, 
         path_to_coq_file: str, 

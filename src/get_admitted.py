@@ -1,19 +1,43 @@
 from ..coqpylspclient import ProofView 
 from ..coqpylspclient.coqlspclient.coq_lsp_structs import Theorem
+from ..coqpylspclient.coqlspclient.progress_bar import StdoutProgressBar
 import sys
 import re
 import random
 from typing import List
 
+"""
+Path to the coq file from the editor and path to the workspace folder
+with the _CoqProject.
+"""
 path_to_coq_file: str = sys.argv[1]
 path_to_root_dir: str = sys.argv[2]
+
+"""
+The number of tokens that gpt can process in a single request.
+"""
 gpt_token_limit: str = sys.argv[3]
 
-progress_indicator_msg_prefix: str = sys.argv[4]
-return_start_msg: str = sys.argv[5]
-return_end_msg: str = sys.argv[6]
+"""
+System messages to parse the logs. 
+"""
+progress_indicator_start_msg: str = sys.argv[4]
+progress_indicator_end_msg: str = sys.argv[5]
+progress_update_msg: str = sys.argv[6]
+progress_log_every_n_percent: int = int(sys.argv[7])
 
-proof_view = ProofView(path_to_coq_file, path_to_root_dir)
+"""
+System messages to identify when the return data of the script starts and ends.
+"""
+return_start_msg: str = sys.argv[8]
+return_end_msg: str = sys.argv[9]
+
+progress_bar = StdoutProgressBar(
+    progress_indicator_start_msg, progress_indicator_end_msg, 
+    progress_update_msg, progress_log_every_n_percent
+)
+
+proof_view = ProofView(path_to_coq_file, path_to_root_dir, progress_bar=progress_bar)
 all_theorems = proof_view.parse_file()
 
 admitted_theorems: List[str] = []

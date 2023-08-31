@@ -77,3 +77,6 @@ print(return_start_msg)
 for theorem in rest_theorems:
     print(theorem)
 print(return_end_msg)
+
+# Post processing block:
+proof_view.exit()

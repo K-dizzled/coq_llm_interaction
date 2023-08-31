@@ -10,6 +10,13 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("EvalLogger")
 
 
+class StdoutLoggingSetup:
+    def __init__(self, return_start_msg: str, return_end_msg: str, failure_msg: str): 
+        self.return_start_msg = return_start_msg
+        self.return_end_msg = return_end_msg
+        self.failure_msg = failure_msg
+
+
 class EvalLoggerException(Exception):
     def __init__(self, message: str) -> None:
         self.message = message
@@ -22,7 +29,8 @@ class EvalLogger:
         run_strategy: str, 
         shots: int, 
         statements2ranges: Dict[str, Range], 
-        silent_mode: bool = False
+        silent_mode: bool = False, 
+        logger_setup: StdoutLoggingSetup = None
     ) -> None: 
         self.coq_file = coq_file_path
         date_time_now = datetime.now().strftime("%d_%m__%H_%M_%S")      
@@ -53,6 +61,7 @@ class EvalLogger:
         self.statements_to_ranges = statements2ranges
         self.ranges_to_text = {}
         self.silent_mode = silent_mode
+        self.logger_setup = logger_setup
 
     def __log(self, text: str) -> None: 
         with open(self.log_f_path, "a") as f:
@@ -179,14 +188,18 @@ class EvalLogger:
             self.ranges_to_text[needed_range] = self.proof_log
 
     def on_evaluation_finish(self) -> None: 
-        new_text = self.__substitute_text_pieces()
-
         if not self.silent_mode: 
+            new_text = self.__substitute_text_pieces()
             fig = go.Figure(data=[go.Pie(labels=self.labels, values=self.values, pull=self.pull)])
             fig.write_image(self.log_pie_path)
             self.__log(new_text)
-        else: 
-            print("&start&return&message&")
-            print(new_text)
-            print(("failure" if self.values[:-1] == [0] * len(self.values[:-1]) else "success"))
-            print("&end&return&message&")
+        elif self.logger_setup is not None: 
+            theorem_proof: List[str] = self.ranges_to_text.values()
+            if len(theorem_proof) == 0: 
+                print(self.logger_setup.failure_msg)
+            elif len(theorem_proof) > 1:
+                raise EvalLoggerException("That should not happen. Report an issue.")
+            else:
+                print(self.logger_setup.return_start_msg)
+                print(theorem_proof[0])
+                print(self.logger_setup.return_end_msg)

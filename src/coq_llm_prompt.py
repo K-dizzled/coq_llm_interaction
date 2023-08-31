@@ -1,5 +1,6 @@
 from .llm_prompt_interface import LLMPromptInterface, ProofView
 from typing import List, Dict, Optional, Tuple
+from ..coqpylspclient.coqlspclient.progress_bar import ProgressBar
 import random
 
 class CoqPromptBasic(LLMPromptInterface): 
@@ -117,3 +118,18 @@ class CoqPromptSolveAdmitted(CoqPromptKShot):
             else:
                 train_theorems.append(theorem.name)
         super().__init__(path_to_coq_file, path_to_root_dir, train_theorems, test_theorems, proof_view=proof_view)
+
+
+class CoqPromptSingleTheorem(CoqPromptKShot): 
+    def __init__(
+        self, 
+        path_to_coq_file: str, 
+        path_to_root_dir: str,
+        train_theorems: List[str],
+        theorem_to_solve: str,
+        progress_bar: ProgressBar = None
+    ) -> None:
+        super().__init__(
+            path_to_coq_file, path_to_root_dir, train_theorems, 
+            [theorem_to_solve], progress_bar=progress_bar
+        )

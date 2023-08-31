@@ -3,6 +3,7 @@ import sys
 import logging
 from ..coqpylspclient import ProofView, ProofViewError
 from ..coqpylspclient import Range, Position
+from ..coqpylspclient.coqlspclient.progress_bar import ProgressBar
 
 
 logging.basicConfig(level=logging.INFO)
@@ -16,12 +17,16 @@ class LLMPromptInterface:
         path_to_root_dir: str,
         train_theorems: List[str],
         test_theorems: List[str],
-        proof_view: Optional[ProofView] = None
+        proof_view: Optional[ProofView] = None,
+        progress_bar: ProgressBar = None
     ) -> None:
-        self.proof_view = proof_view if proof_view is not None else ProofView(path_to_coq_file, path_to_root_dir)
+        self.proof_view = proof_view if proof_view is not None else ProofView(
+            path_to_coq_file, path_to_root_dir, prog_bar=progress_bar
+        )
         self.coq_file = path_to_coq_file
         self.root_dir = path_to_root_dir
         self.prompt_strategy = self.__class__.__name__
+        self.progress_bar = progress_bar
 
         logger.info(f"Start preprocessing {self.coq_file} to obtain the training info.")
         self.theorems_from_file = self.proof_view.parse_file()
@@ -107,7 +112,7 @@ class LLMPromptInterface:
         """
         Restarts the ProofView class.
         """
-        self.proof_view = ProofView(self.coq_file, self.root_dir)
+        self.proof_view = ProofView(self.coq_file, self.root_dir, prog_bar=self.progress_bar)
     
     def stop(self) -> None: 
         """

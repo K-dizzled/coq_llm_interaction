@@ -1,6 +1,6 @@
 from .llm_interface import LLMInterface
 from .llm_prompt_interface import LLMPromptInterface, ProofViewError
-from .eval_logger import EvalLogger
+from .eval_logger import EvalLogger, StdoutLoggingSetup
 import time
 from typing import Tuple
 
@@ -9,7 +9,8 @@ class Interactor:
         self, 
         llm_prompt: LLMPromptInterface, 
         llm_interface: LLMInterface, 
-        is_silent: bool = False
+        is_silent: bool = False,
+        logging_setup: StdoutLoggingSetup = None
     ) -> None: 
         self.llm_prompt = llm_prompt
         self.llm_interface = llm_interface
@@ -19,6 +20,7 @@ class Interactor:
         self.contents_pointer = 0
         self.timeout = 20
         self.silent_mode = is_silent
+        self.logging_setup = logging_setup
     
     def run(self, shots: int = 1) -> float:
         """ 
@@ -33,7 +35,8 @@ class Interactor:
         """
         run_logger = EvalLogger(
             self.llm_prompt.coq_file, self.llm_prompt.prompt_strategy, 
-            shots, self.llm_prompt.statements_to_ranges, silent_mode=self.silent_mode
+            shots, self.llm_prompt.statements_to_ranges, silent_mode=self.silent_mode,
+            logger_setup=self.logging_setup
         )
 
         statements = self.llm_prompt.get_theorems_for_evaluation()

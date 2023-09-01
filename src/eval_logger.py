@@ -196,7 +196,9 @@ class EvalLogger:
         elif self.logger_setup is not None: 
             theorem_proof: List[str] = list(self.ranges_to_text.values())
             if len(theorem_proof) == 0: 
+                print(self.logger_setup.return_start_msg)
                 print(self.logger_setup.failure_msg)
+                print(self.logger_setup.return_end_msg)
             elif len(theorem_proof) > 1:
                 raise EvalLoggerException("That should not happen. Report an issue.")
             else:

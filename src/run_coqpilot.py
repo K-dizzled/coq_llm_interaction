@@ -24,7 +24,8 @@ Name of the theorem to solve and a list of theorems to use as train theorems.
 Train theorems must be separated by a comma (without spaces).
 """
 theorem_to_solve: str = sys.argv[5]
-train_theorems: List[str] = sys.argv[6].split(",")
+# If equal to "EMPTY", then empty list is used.
+train_theorems: List[str] = sys.argv[6].split(",") if sys.argv[6] != "EMPTY" else []
 
 """
 System messages to parse the logs. 
